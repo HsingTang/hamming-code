@@ -1,7 +1,9 @@
 package UI;
 
 import code.HammingCoder;
-import exception.HammingException;
+import exception.DoubleBitErrorException;
+import exception.InvalidInputFormatException;
+import exception.SingleBitErrorException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
@@ -53,7 +55,14 @@ public class ViewController {
             } else if (decode) {
                 output.setText(coder.decode(input.getText()));
             }
-        }catch (HammingException e){
+        }catch (InvalidInputFormatException e){
+            this.alert.setContentText("Input must be a binary sequence.");
+            this.alert.showAndWait();
+        }catch (SingleBitErrorException e){
+            this.alert.setContentText("Single bit error detected at bit index "+e.getErrorBitIndex());
+            this.alert.showAndWait();
+        }catch (DoubleBitErrorException e){
+            this.alert.setContentText("Double bit error detected.");
             this.alert.showAndWait();
         }
     }
@@ -61,7 +70,6 @@ public class ViewController {
     private void setupAlert(){
         this.alert = new Alert(Alert.AlertType.ERROR);
         this.alert.setTitle("Invalid input");
-        this.alert.setContentText("Input must be a binary sequence.");
     }
 
 

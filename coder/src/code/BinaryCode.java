@@ -1,6 +1,6 @@
 package code;
 
-import exception.HammingException;
+import exception.InvalidInputFormatException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,9 +16,9 @@ public class BinaryCode {
     private Boolean doubleError;
     private Integer singleErrorBit;
 
-    public BinaryCode(String content) throws HammingException{
+    public BinaryCode(String content) throws InvalidInputFormatException {
         if(!validateBinary(content)){
-            throw new HammingException();
+            throw new InvalidInputFormatException();
         }
         myBitContent = new ArrayList<>();
         for(int i = 0; i<content.length(); i++){
@@ -60,20 +60,8 @@ public class BinaryCode {
         return new ArrayList<>(this.myBitContent);
     }
 
-    public Boolean getBitAt(Integer index){
-        return this.myBitContent.get(index);
-    }
-
     public Integer getSingleErrorBit() {
         return singleErrorBit;
-    }
-
-    public Boolean getSingleError() {
-        return this.singleError;
-    }
-
-    public Boolean getDoubleError() {
-        return this.doubleError;
     }
 
     private boolean validateBinary(String str){
