@@ -14,8 +14,18 @@ public class HammingCoder {
         parityMap = new HashMap<>();
     }
 
+    public String encode(String code){
+        BinaryCode encodingResult = this.encode(new BinaryCode(code));
+        return encodingResult.toString();
+    }
+
+    public String decode(String code){
+        BinaryCode encodingResult = this.decode(new BinaryCode(code));
+        return encodingResult.toString();
+    }
+
     // TODO: factor down this method
-    public BinaryCode encode(BinaryCode code){
+    private BinaryCode encode(BinaryCode code){
         int numPBits = numParityBitsEncode(code.length());
         if(parityMap.size() < numPBits){
             expandParityMap(numPBits);
@@ -51,7 +61,7 @@ public class HammingCoder {
         return new BinaryCode(bits);
     }
 
-    public BinaryCode decode(BinaryCode code){
+    private BinaryCode decode(BinaryCode code){
         int numPBits = numParityBitsDecode(code.length());
         if(parityMap.size() < numPBits){
             expandParityMap(numPBits);

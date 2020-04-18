@@ -22,8 +22,7 @@ public class BinaryCode {
         */
         myBitContent = new ArrayList<>();
         for(int i = 0; i<content.length(); i++){
-            Boolean value = content.charAt(i)=='1'? true:false;
-            myBitContent.add(value);
+            myBitContent.add(content.charAt(i)=='1'? true:false);
         }
         this.singleError = false;
         this.doubleError = false;
@@ -31,6 +30,14 @@ public class BinaryCode {
 
     public BinaryCode(Collection <Boolean> content){
         this.myBitContent = new ArrayList<>(content);
+    }
+
+    public String toString(){
+        StringBuilder sb =new StringBuilder();
+        for(int i = 0; i<myBitContent.size(); i++){
+            sb.append(myBitContent.get(i)?'1':'0');
+        }
+        return sb.toString();
     }
 
     public void setSingleErrorBit(Integer singleErrorBit) {
