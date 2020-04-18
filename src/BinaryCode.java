@@ -12,10 +12,12 @@ public class BinaryCode {
     private Boolean doubleError;
     private Integer singleErrorBit;
 
-    public BinaryCode(String content) throws HammingException{
+    public BinaryCode(String content){
+        /*
         if(!validateBinary(content)){
             throw new HammingException();
         }
+        */
         myBitContent = new ArrayList<>();
         for(int i = 0; i<content.length(); i++){
             Boolean value = content.charAt(i)=='1'? true:false;

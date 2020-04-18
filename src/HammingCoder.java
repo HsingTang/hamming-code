@@ -5,14 +5,15 @@ import java.util.stream.IntStream;
 public class HammingCoder {
 
     // mapping of parity bit's index to coverage indices in the encoded bit stream
-    private static Map<Integer, List<Integer>> parityMap = new HashMap<>();
+    private Map<Integer, List<Integer>> parityMap;
     private ResourceBundle resourceBundle;
 
     public HammingCoder(){
+        parityMap = new HashMap<>();
     }
 
     // TODO: factor down this method
-    public static BinaryCode encode(BinaryCode code){
+    public BinaryCode encode(BinaryCode code){
         int numPBits = numParityBitsEncode(code.length());
         if(parityMap.size() < numPBits){
             expandParityMap(numPBits);
@@ -32,6 +33,7 @@ public class HammingCoder {
         while(parityIndex <= Math.pow(2,numPBits-1)){
             List<Boolean> coverage = new ArrayList<>();
             for(int index : parityMap.get(parityIndex)){
+                if(bits.size()<=index) break;
                 coverage.add(bits.get(index));
             }
             bits.set(parityIndex,setParityBit(coverage));
@@ -47,7 +49,7 @@ public class HammingCoder {
         return new BinaryCode(bits);
     }
 
-    public static BinaryCode decode(BinaryCode code){
+    public BinaryCode decode(BinaryCode code){
         int numPBits = numParityBitsDecode(code.length());
         if(parityMap.size() < numPBits){
             expandParityMap(numPBits);
@@ -68,7 +70,7 @@ public class HammingCoder {
      *             and set code.singleErrorBit as the corrupted bit index;
      *             set code.doubleError as true if detecting double bit corruptions.
      */
-    public static void validateCode(BinaryCode code){
+    public void validateCode(BinaryCode code){
         Integer singleErrorBit = detectSingleError(code);
         code.setSingleErrorBit(singleErrorBit);
         code.setSingleError((singleErrorBit!=-1 && !validateOverall(code)));
@@ -80,7 +82,7 @@ public class HammingCoder {
      * @param code bit stream to validate against single bit corruption
      * @return bit index of the detected single error. Return -1 if no single error detected.
      */
-    private static Integer detectSingleError(BinaryCode code){
+    private Integer detectSingleError(BinaryCode code){
         int numPBits = numParityBitsDecode(code.length());
         if(parityMap.size() < numPBits){
             expandParityMap(numPBits);
@@ -108,7 +110,7 @@ public class HammingCoder {
         return -1;
     }
 
-    private static Boolean validateOverall(BinaryCode code){
+    private Boolean validateOverall(BinaryCode code){
         List<Boolean> bits = new ArrayList<>();
         for(int i = 1; i<code.getBits().size(); i++){
             if(!parityMap.containsKey(i)){
@@ -118,7 +120,7 @@ public class HammingCoder {
         return validateParityBit(bits.get(0),bits);
     }
 
-    private static Integer numParityBitsEncode(Integer wordLength){
+    private Integer numParityBitsEncode(Integer wordLength){
         int numBits = 0;
         while(Math.pow(2,numBits) < wordLength+numBits+1){
             numBits++;
@@ -126,7 +128,7 @@ public class HammingCoder {
         return numBits;
     }
 
-    private static Integer numParityBitsDecode(Integer wordLength){
+    private Integer numParityBitsDecode(Integer wordLength){
         int numBits = 0;
         while(Math.pow(2,numBits) < wordLength){
             numBits++;
@@ -134,14 +136,14 @@ public class HammingCoder {
         return numBits;
     }
 
-    private static void expandParityMap(Integer targetMapSize){
+    private void expandParityMap(Integer targetMapSize){
         int maxWordLength = (int) Math.pow(2,targetMapSize)-targetMapSize-1;
-        for(int parity = parityMap.size()+1; parity<targetMapSize; parity++){
+        for(int parity = parityMap.size()+1; parity<=targetMapSize; parity++){
             parityMap.put((int)Math.pow(2,parity-1),new ArrayList<>());
             for(int index = (int) Math.pow(2,parity-1)+1; index<maxWordLength; index++){
                 String binary = Integer.toBinaryString(index);
                 if(binary.charAt(binary.length()-parity)=='1'){
-                    parityMap.get(parity).add(index);
+                    parityMap.get((int)Math.pow(2,parity-1)).add(index);
                 }
             }
         }
@@ -152,12 +154,12 @@ public class HammingCoder {
      * @param bits values of bits covered by the parity bit
      * @return true if even-parity is maintained, false otherwise
      */
-    private static Boolean validateParityBit(Boolean parityBit, Collection<Boolean> bits){
+    private Boolean validateParityBit(Boolean parityBit, Collection<Boolean> bits){
         Boolean expected = setParityBit(bits);
         return parityBit==expected;
     }
 
-    private static Boolean setParityBit(Collection<Boolean> bits){
+    private Boolean setParityBit(Collection<Boolean> bits){
         int count = 0;
         for(Boolean bit : bits){
             count = bit? count+1 : count;
