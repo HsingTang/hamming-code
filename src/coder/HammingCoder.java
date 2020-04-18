@@ -1,3 +1,5 @@
+package coder;
+
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -45,7 +47,7 @@ public class HammingCoder {
             coverage.add(bits.get(index));
         }
         bits.set(0,setParityBit(coverage));
-        // construct a new BinaryCode object based on encoded bit stream
+        // construct a new coder.BinaryCode object based on encoded bit stream
         return new BinaryCode(bits);
     }
 

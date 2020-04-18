@@ -1,3 +1,5 @@
+package coder;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -15,7 +17,7 @@ public class BinaryCode {
     public BinaryCode(String content){
         /*
         if(!validateBinary(content)){
-            throw new HammingException();
+            throw new coder.HammingException();
         }
         */
         myBitContent = new ArrayList<>();
