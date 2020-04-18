@@ -1,5 +1,7 @@
 package code;
 
+import exception.HammingException;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -14,12 +16,10 @@ public class BinaryCode {
     private Boolean doubleError;
     private Integer singleErrorBit;
 
-    public BinaryCode(String content){
-        /*
+    public BinaryCode(String content) throws HammingException{
         if(!validateBinary(content)){
-            throw new coder.exception.HammingException();
+            throw new HammingException();
         }
-        */
         myBitContent = new ArrayList<>();
         for(int i = 0; i<content.length(); i++){
             myBitContent.add(content.charAt(i)=='1'? true:false);

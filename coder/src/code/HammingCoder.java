@@ -1,5 +1,7 @@
 package code;
 
+import exception.HammingException;
+
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -8,20 +10,29 @@ public class HammingCoder {
 
     // mapping of parity bit's index to coverage indices in the encoded bit stream
     private Map<Integer, List<Integer>> parityMap;
-    private ResourceBundle resourceBundle;
 
     public HammingCoder(){
         parityMap = new HashMap<>();
     }
 
-    public String encode(String code){
-        BinaryCode encodingResult = this.encode(new BinaryCode(code));
+    public String encode(String code) throws HammingException{
+        BinaryCode encodingResult;
+        try {
+            encodingResult = this.encode(new BinaryCode(code));
+        }catch (HammingException e){
+            throw e;
+        }
         return encodingResult.toString();
     }
 
-    public String decode(String code){
-        BinaryCode encodingResult = this.decode(new BinaryCode(code));
-        return encodingResult.toString();
+    public String decode(String code) throws HammingException{
+        BinaryCode decodingResult;
+        try {
+            decodingResult = this.decode(new BinaryCode(code));
+        }catch (HammingException e){
+            throw e;
+        }
+        return decodingResult.toString();
     }
 
     // TODO: factor down this method

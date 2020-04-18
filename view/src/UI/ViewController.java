@@ -1,7 +1,9 @@
 package UI;
 
 import code.HammingCoder;
+import exception.HammingException;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.text.Text;
@@ -17,6 +19,8 @@ public class ViewController {
     @FXML
     private Text output;
 
+    private Alert alert;
+
     private HammingCoder coder;
     private Boolean encode;
     private Boolean decode;
@@ -26,6 +30,7 @@ public class ViewController {
         this.coder = new HammingCoder();
         this.encode = false;
         this.decode = false;
+        setupAlert();
     }
 
     public void setEncode() {
@@ -42,11 +47,21 @@ public class ViewController {
 
 
     public void run(){
-        if(encode){
-            output.setText(coder.encode(input.getText()));
-        }else if(decode){
-            output.setText(coder.decode(input.getText()));
+        try {
+            if (encode) {
+                output.setText(coder.encode(input.getText()));
+            } else if (decode) {
+                output.setText(coder.decode(input.getText()));
+            }
+        }catch (HammingException e){
+            this.alert.showAndWait();
         }
+    }
+
+    private void setupAlert(){
+        this.alert = new Alert(Alert.AlertType.ERROR);
+        this.alert.setTitle("Invalid input");
+        this.alert.setContentText("Input must be a binary sequence.");
     }
 
 

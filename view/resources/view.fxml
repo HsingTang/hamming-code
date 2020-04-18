@@ -20,6 +20,7 @@
       <ColumnConstraints />
       <ColumnConstraints />
       <ColumnConstraints />
+      <ColumnConstraints />
    </columnConstraints>
    <rowConstraints>
       <RowConstraints />
@@ -36,11 +37,12 @@
       <RowConstraints />
       <RowConstraints />
       <RowConstraints />
+      <RowConstraints />
    </rowConstraints>
    <children>
-      <Label text="Enter bit stream:" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-      <TextArea fx:id="input" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="300.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="TOP" />
-      <VBox prefHeight="111.0" prefWidth="42.0" GridPane.columnIndex="5" GridPane.rowIndex="4">
+      <Label text="Enter bit stream:" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+      <TextArea fx:id="input" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="300.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="TOP" />
+      <VBox prefHeight="111.0" prefWidth="42.0" GridPane.columnIndex="6" GridPane.rowIndex="5">
          <children>
             <Button mnemonicParsing="false" onAction="#run" text="OK">
                <VBox.margin>
@@ -49,7 +51,7 @@
             </Button>
          </children>
       </VBox>
-      <HBox prefHeight="0.0" prefWidth="301.0" GridPane.columnIndex="1" GridPane.rowIndex="7">
+      <HBox prefHeight="0.0" prefWidth="301.0" GridPane.columnIndex="2" GridPane.rowIndex="8">
          <children>
             <CheckBox fx:id="encodeCheckbox" mnemonicParsing="false" onAction="#setEncode" text="Encode" />
             <CheckBox fx:id="decodeCheckbox" mnemonicParsing="false" onAction="#setDecode" text="Decode">
@@ -59,8 +61,8 @@
             </CheckBox>
          </children>
       </HBox>
-      <Label text="Result:" GridPane.columnIndex="1" GridPane.rowIndex="10" />
-      <Text fx:id="output" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.columnIndex="1" GridPane.rowIndex="11">
+      <Label text="Result:" GridPane.columnIndex="2" GridPane.rowIndex="11" />
+      <Text fx:id="output" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.columnIndex="2" GridPane.rowIndex="12">
          <GridPane.margin>
             <Insets bottom="150.0" />
          </GridPane.margin>
