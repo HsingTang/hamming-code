@@ -17,6 +17,12 @@ public class HammingCoder {
         parityMap = new HashMap<>();
     }
 
+    /**
+     * Applies Hamming coding to encode a bit sequence in binary form
+     * @param code String containing the input bit sequence to encode following Hamming Encoding rules
+     * @return String containing the encoded bit sequence
+     * @throws InvalidInputFormatException if the input String contains characters other than 0 or 1
+     */
     public String encode(String code) throws InvalidInputFormatException {
         BinaryCode encodingResult;
         try {
@@ -27,78 +33,35 @@ public class HammingCoder {
         return encodingResult.toString();
     }
 
-    public String decode(String code) throws InvalidInputFormatException, SingleBitErrorException, DoubleBitErrorException {
+    /**
+     * Recovers the original data from a Hamming-encoded binary bit sequence
+     * @param code String containing the input bit sequence to decode following Hamming Encoding rules
+     * @return String containing the decoded bit sequence after trimming off all parity bits
+     * @throws InvalidInputFormatException if the input String contains characters other than 0 or 1
+     */
+    public String decode(String code) throws InvalidInputFormatException {
         BinaryCode decodingResult;
         try {
             decodingResult = this.decode(new BinaryCode(code));
-        }catch (InvalidInputFormatException | SingleBitErrorException | DoubleBitErrorException e){
+        }catch (InvalidInputFormatException e){
             throw e;
         }
         return decodingResult.toString();
     }
 
-    private BinaryCode encode(BinaryCode code){
-        int numPBits = numParityBitsEncode(code.length());
-        if(parityMap.size() < numPBits){
-            expandParityMap(numPBits);
-        }
-        // set up encoded bit stream
-        List<Boolean> bits = code.getBits();
-        // initialize overall parity bit
-        bits.add(0,false);
-        // initialize index-based parity bits
-        int parityIndex = 1;
-        while(parityIndex <= Math.pow(2,numPBits-1)){
-            bits.add(parityIndex,false);
-            parityIndex*=2;
-        }
-        // determine values for parity bits
-        parityIndex = 1;
-        while(parityIndex <= Math.pow(2,numPBits-1)){
-            List<Boolean> coverage = collectCoveredBits(parityIndex, bits);
-            bits.set(parityIndex,setParityBit(coverage));
-            parityIndex*=2;
-        }
-        // determine value for overall parity bit
-        List<Boolean> coverage = new ArrayList<>();
-        for(int index = 1; index<bits.size(); index++){
-            coverage.add(bits.get(index));
-        }
-        bits.set(0,setParityBit(coverage));
-        // construct a new coder.code.BinaryCode object based on encoded bit stream
-        return new BinaryCode(bits);
-    }
-
-    private BinaryCode decode(BinaryCode code) throws SingleBitErrorException, DoubleBitErrorException{
-        int numPBits = numParityBitsDecode(code.length());
-        if(parityMap.size() < numPBits){
-            expandParityMap(numPBits);
-        }
-        List<Boolean> bits = code.getBits();
-
-        try{
-            validateCode(code);
-        }catch (SingleBitErrorException e){
-            int correctingIndex = e.getErrorBitIndex();
-            bits.set(correctingIndex,!bits.get(correctingIndex));
-            e.setCorrectedBits(extractDecodedBits(bits).toString());
-            throw e;
-        } catch(DoubleBitErrorException e){
-            throw e;
-        }
-
-        return extractDecodedBits(bits);
-    }
-
     /**
-     * @param code bit stream to validate against single/double bit corruption
-     *             set code.singleError as true if detecting a single bit corruption,
-     *             and set code.singleErrorBit as the corrupted bit index;
-     *             set code.doubleError as true if detecting double bit corruptions.
+     * Validate a bit sequence against single- or double-bit corruption.
+     * @param codeContent String containing the bit sequence to validate
+     * @throws InvalidInputFormatException if the input String contains characters other than 0 or 1
+     * @throws SingleBitErrorException if a single-bit corruption is detected.
+     *          Set SingleBitErrorException.errorBitIndex as the index of corrupted bit.
+     * @throws DoubleBitErrorException if a double-bit corruption is detected.
      */
-    private void validateCode(BinaryCode code) throws SingleBitErrorException,DoubleBitErrorException{
+    public void validateCode(String codeContent) throws InvalidInputFormatException,SingleBitErrorException,DoubleBitErrorException{
+        BinaryCode code = new BinaryCode(codeContent);
         int singleErrorBit = detectSingleError(code);
-        boolean overAllParity = validateOverall(code);
+        boolean overAllParity = validateOverallParity(code);
+
         if(singleErrorBit!=-1 && !overAllParity){
             throw new SingleBitErrorException(singleErrorBit);
         }else if(singleErrorBit!=-1 && overAllParity){
@@ -137,13 +100,54 @@ public class HammingCoder {
         return -1;
     }
 
-    private boolean validateOverall(BinaryCode code){
+    private boolean validateOverallParity(BinaryCode code){
         List<Boolean> bits = new ArrayList<>();
         List<Boolean> codeBits = code.getBits();
         for(int i = 1; i<codeBits.size(); i++){
                 bits.add(codeBits.get(i));
         }
         return validateParityBit(codeBits.get(0),bits);
+    }
+
+    private BinaryCode encode(BinaryCode code){
+        int numPBits = numParityBitsEncode(code.length());
+        if(parityMap.size() < numPBits){
+            expandParityMap(numPBits);
+        }
+        // set up encoded bit stream
+        List<Boolean> bits = code.getBits();
+        // initialize overall parity bit
+        bits.add(0,false);
+        // initialize index-based parity bits
+        int parityIndex = 1;
+        while(parityIndex <= Math.pow(2,numPBits-1)){
+            bits.add(parityIndex,false);
+            parityIndex*=2;
+        }
+        // determine values for parity bits
+        parityIndex = 1;
+        while(parityIndex <= Math.pow(2,numPBits-1)){
+            List<Boolean> coverage = collectCoveredBits(parityIndex, bits);
+            bits.set(parityIndex,setParityBit(coverage));
+            parityIndex*=2;
+        }
+        // determine value for overall parity bit
+        List<Boolean> coverage = new ArrayList<>();
+        for(int index = 1; index<bits.size(); index++){
+            coverage.add(bits.get(index));
+        }
+        bits.set(0,setParityBit(coverage));
+        // construct a new coder.code.BinaryCode object based on encoded bit stream
+        return new BinaryCode(bits);
+    }
+
+    private BinaryCode decode(BinaryCode code) {
+        int numPBits = numParityBitsDecode(code.length());
+        if(parityMap.size() < numPBits){
+            expandParityMap(numPBits);
+        }
+        List<Boolean> bits = code.getBits();
+        return extractDecodedBits(bits);
     }
 
     private BinaryCode extractDecodedBits(List<Boolean> bits){

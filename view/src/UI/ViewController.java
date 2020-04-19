@@ -26,6 +26,7 @@ public class ViewController {
     private HammingCoder coder;
     private Boolean encode;
     private Boolean decode;
+    private String inputString;
 
 
     public ViewController(){
@@ -49,21 +50,31 @@ public class ViewController {
 
 
     public void run(){
+        inputString = input.getText();
         try {
             if (encode) {
-                output.setText(coder.encode(input.getText()));
+                output.setText(coder.encode(inputString));
             } else if (decode) {
-                output.setText(coder.decode(input.getText()));
+                validateDecodeInput();
+                output.setText(coder.decode(inputString));
             }
         }catch (InvalidInputFormatException e){
             this.alert.setContentText("Input must be a binary sequence.");
             this.alert.showAndWait();
-        }catch (SingleBitErrorException e){
-            output.setText(e.getCorrectedBits());
-            this.alert.setContentText("Single bit error detected at bit index "+e.getErrorBitIndex()+". \nCorrected bit sequence is as displayed.");
+        }
+    }
+
+    private void validateDecodeInput() throws InvalidInputFormatException{
+        try {
+            coder.validateCode(input.getText());
+        }catch (InvalidInputFormatException e){
+            throw e;
+        } catch (SingleBitErrorException e){
+            inputString = fixCorruptedBit(input.getText(),e.getErrorBitIndex());
+            this.alert.setContentText("Single-bit corruption detected at bit index "+e.getErrorBitIndex());
             this.alert.showAndWait();
-        }catch (DoubleBitErrorException e){
-            this.alert.setContentText("Double bit error detected.");
+        } catch (DoubleBitErrorException e){
+            this.alert.setContentText("Double-bit corruption detected");
             this.alert.showAndWait();
         }
     }
@@ -72,6 +83,13 @@ public class ViewController {
         this.alert = new Alert(Alert.AlertType.ERROR);
         this.alert.setTitle("Invalid input");
     }
+
+    private String fixCorruptedBit(String string, int index){
+        char[] chars = string.toCharArray();
+        chars[index] = chars[index]=='1'? '0':'1';
+        return new String(chars);
+    }
+
 
 
 }
