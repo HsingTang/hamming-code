@@ -2,23 +2,12 @@ package exception;
 
 public class SingleBitErrorException extends Exception{
 
-    private Integer errorBitIndex;
-    private String correctedBits;
-
-    public SingleBitErrorException(Integer errorBitIndex){
-        super();
-        this.errorBitIndex = errorBitIndex;
+    public SingleBitErrorException(int errorBitIndex){
+        super(Integer.toString(errorBitIndex));
     }
 
-    public Integer getErrorBitIndex(){
-        return this.errorBitIndex;
+    public int getErrorBitIndex(){
+        return Integer.valueOf(this.getMessage());
     }
 
-    public String getCorrectedBits() {
-        return correctedBits;
-    }
-
-    public void setCorrectedBits(String correctedBits) {
-        this.correctedBits = correctedBits;
-    }
 }
