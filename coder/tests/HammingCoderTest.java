@@ -10,8 +10,8 @@ import org.junit.Test;
 
 public class HammingCoderTest {
 
-    HammingCoder coder = new HammingCoder();
-    String dummyOriginalBits = "00011000";
+    private HammingCoder coder = new HammingCoder();
+    private String dummyOriginalBits = "00011000";
 
     @Test
     public void testEncoding() throws InvalidInputFormatException {

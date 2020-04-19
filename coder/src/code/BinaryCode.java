@@ -12,9 +12,6 @@ import java.util.List;
 public class BinaryCode {
 
     private ArrayList<Boolean> myBitContent;
-    private Boolean singleError;
-    private Boolean doubleError;
-    private Integer singleErrorBit;
 
     public BinaryCode(String content) throws InvalidInputFormatException {
         if(!validateBinary(content)){
@@ -22,34 +19,20 @@ public class BinaryCode {
         }
         myBitContent = new ArrayList<>();
         for(int i = 0; i<content.length(); i++){
-            myBitContent.add(content.charAt(i)=='1'? true:false);
+            myBitContent.add(content.charAt(i)=='1');
         }
-        this.singleError = false;
-        this.doubleError = false;
     }
 
-    public BinaryCode(Collection <Boolean> content){
+    BinaryCode(Collection <Boolean> content){
         this.myBitContent = new ArrayList<>(content);
     }
 
     public String toString(){
         StringBuilder sb =new StringBuilder();
-        for(int i = 0; i<myBitContent.size(); i++){
-            sb.append(myBitContent.get(i)?'1':'0');
+        for(boolean b:this.myBitContent){
+            sb.append(b?'1':'0');
         }
         return sb.toString();
-    }
-
-    public void setSingleErrorBit(Integer singleErrorBit) {
-        this.singleErrorBit = singleErrorBit;
-    }
-
-    public void setSingleError(Boolean error){
-        this.singleError = error;
-    }
-
-    public void setDoubleError(Boolean error){
-        this.doubleError = error;
     }
 
     public Integer length(){
@@ -58,10 +41,6 @@ public class BinaryCode {
 
     public List<Boolean> getBits(){
         return new ArrayList<>(this.myBitContent);
-    }
-
-    public Integer getSingleErrorBit() {
-        return singleErrorBit;
     }
 
     private boolean validateBinary(String str){

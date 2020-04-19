@@ -59,7 +59,8 @@ public class ViewController {
             this.alert.setContentText("Input must be a binary sequence.");
             this.alert.showAndWait();
         }catch (SingleBitErrorException e){
-            this.alert.setContentText("Single bit error detected at bit index "+e.getErrorBitIndex());
+            output.setText(e.getCorrectedBits());
+            this.alert.setContentText("Single bit error detected at bit index "+e.getErrorBitIndex()+". \nCorrected bit sequence is as displayed.");
             this.alert.showAndWait();
         }catch (DoubleBitErrorException e){
             this.alert.setContentText("Double bit error detected.");
