@@ -44,7 +44,7 @@ public class HammingCoderTest {
             String original = Integer.toBinaryString(rand.nextInt(Integer.MAX_VALUE));
             String encoded = coder.encode(original);
             char[] chars = encoded.toCharArray();
-            int corruptedIdx = 1+rand.nextInt(encoded.length()-1);
+            int corruptedIdx = rand.nextInt(encoded.length());
             chars[corruptedIdx] = chars[corruptedIdx]=='1'? '0':'1';
             String corrupted = new String(chars);
             try {

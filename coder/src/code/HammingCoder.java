@@ -62,16 +62,20 @@ public class HammingCoder {
         int singleErrorBit = detectSingleError(code);
         boolean overAllParity = validateOverallParity(code);
 
-        if(singleErrorBit!=-1 && !overAllParity){
+        if(singleErrorBit!=-1 && singleErrorBit!=-2 && !overAllParity){
             throw new SingleBitErrorException(singleErrorBit);
-        }else if(singleErrorBit!=-1 && overAllParity){
+        }else if(singleErrorBit==-1 && !overAllParity){
+            throw new SingleBitErrorException(0);
+        }else if((singleErrorBit!=-1 && overAllParity) || singleErrorBit==-2){
             throw new DoubleBitErrorException();
         }
     }
 
     /**
      * @param code bit stream to validate against single bit corruption
-     * @return bit index of the detected single error. Return -1 if no single error detected.
+     * @return bit index of the detected single error.
+     *      Return -1 if no single error detected.
+     *      Return -2 if more than one errors detected.
      */
     private int detectSingleError(BinaryCode code){
         int numPBits = numParityBitsDecode(code.length());
@@ -94,8 +98,11 @@ public class HammingCoder {
             parityIndex*=2;
         }
         if(flag){
-            assert (corruption.size()==1);
-            return corruption.get(0);
+            if(corruption.size()==1) {
+                return corruption.get(0);
+            }else{
+                return -2;
+            }
         }
         return -1;
     }
