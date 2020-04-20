@@ -39,10 +39,11 @@ public class ViewController {
 
 
     public ViewController(){
-        this.coder = new HammingCoder();
-        this.encode = false;
-        this.decode = false;
+        coder = new HammingCoder();
+        encode = false;
+        decode = false;
         setupAlert();
+        setupFileChooser();
     }
 
     public void setStage(Stage stage) {
@@ -78,10 +79,6 @@ public class ViewController {
     }
 
     public void invokeFileChooser(){
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
-        fileChooser.getExtensionFilters().add(extFilter);
         readInputFromFile(fileChooser.showOpenDialog(myStage));
     }
 
@@ -106,6 +103,13 @@ public class ViewController {
             this.alert.setContentText("Double-bit corruption detected");
             this.alert.showAndWait();
         }
+    }
+
+    private void setupFileChooser(){
+        fileChooser = new FileChooser();
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+        fileChooser.getExtensionFilters().add(extFilter);
     }
 
     private void setupAlert(){
