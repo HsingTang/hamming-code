@@ -115,7 +115,7 @@ public class ViewController {
         try {
             String inputFromFile = new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
             input.setText(inputFromFile);
-        } catch (IOException e) {
+        } catch (IOException | NullPointerException e) {
             return;
         } catch (OutOfMemoryError e){
             this.alert.setContentText("File is too large");
@@ -129,7 +129,7 @@ public class ViewController {
             writer = new PrintWriter(file);
             writer.println(output.getText());
             writer.close();
-        } catch (IOException ex) {
+        } catch (IOException | NullPointerException e) {
             this.alert.setContentText("File saving failed");
             this.alert.showAndWait();
         }
