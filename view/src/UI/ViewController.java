@@ -8,12 +8,13 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextArea;
-import javafx.scene.text.Text;
+import javafx.scene.control.TextFormatter;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -26,7 +27,7 @@ public class ViewController {
     @FXML
     private TextArea input;
     @FXML
-    private Text output;
+    private TextArea output;
 
     private Stage myStage;
     private Alert alert;
@@ -36,13 +37,19 @@ public class ViewController {
     private Boolean encode;
     private Boolean decode;
     private String inputString;
+    private final int MAX_INPUT_LENGTH = Integer.MAX_VALUE - 32;
 
 
     public ViewController(){
         coder = new HammingCoder();
         encode = false;
         decode = false;
+    }
+
+    @FXML
+    public void initialize() {
         setupAlert();
+        setupInputTextField();
         setupFileChooser();
     }
 
@@ -62,7 +69,6 @@ public class ViewController {
         encodeCheckbox.setSelected(false);
     }
 
-
     public void run(){
         inputString = input.getText();
         try {
@@ -78,15 +84,35 @@ public class ViewController {
         }
     }
 
-    public void invokeFileChooser(){
+    public void invokeLoadFile(){
         readInputFromFile(fileChooser.showOpenDialog(myStage));
+    }
+
+    public void invokeSaveFile(){
+        saveOutputToFile(fileChooser.showSaveDialog(myStage));
     }
 
     private void readInputFromFile(File file){
         try {
-            input.setText(new String(Files.readAllBytes(Paths.get(file.getAbsolutePath()))));
+            String inputFromFile = new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
+            input.setText(inputFromFile);
         } catch (IOException e) {
             return;
+        } catch (OutOfMemoryError e){
+            this.alert.setContentText("File is too large");
+            this.alert.showAndWait();
+        }
+    }
+
+    private void saveOutputToFile(File file){
+        try {
+            PrintWriter writer;
+            writer = new PrintWriter(file);
+            writer.println(output.getText());
+            writer.close();
+        } catch (IOException ex) {
+            this.alert.setContentText("File saving failed");
+            this.alert.showAndWait();
         }
     }
 
@@ -105,16 +131,22 @@ public class ViewController {
         }
     }
 
+    private void setupAlert(){
+        this.alert = new Alert(Alert.AlertType.ERROR);
+        this.alert.setTitle("Error");
+    }
+
+    private void setupInputTextField(){
+        input.setWrapText(true);
+        input.setTextFormatter(new TextFormatter<String>(change ->
+                change.getControlNewText().length() <= MAX_INPUT_LENGTH ? change : null));
+    }
+
     private void setupFileChooser(){
         fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
         fileChooser.getExtensionFilters().add(extFilter);
-    }
-
-    private void setupAlert(){
-        this.alert = new Alert(Alert.AlertType.ERROR);
-        this.alert.setTitle("Invalid input");
     }
 
     private String fixCorruptedBit(String string, int index){
