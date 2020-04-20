@@ -127,7 +127,7 @@ public class ViewController {
         try {
             PrintWriter writer;
             writer = new PrintWriter(file);
-            writer.println(output.getText());
+            writer.print(output.getText());
             writer.close();
         } catch (IOException | NullPointerException e) {
             this.alert.setContentText("File saving failed");
