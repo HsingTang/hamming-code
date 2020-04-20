@@ -57,18 +57,29 @@ public class ViewController {
         myStage = stage;
     }
 
+    /**
+     * Update Controller mode for preparing to encode input bits and unselect decoding checkbox.
+     */
     public void setEncode() {
         this.encode = true;
         this.decode = false;
         decodeCheckbox.setSelected(false);
     }
 
+    /**
+     * Update Controller mode for preparing to decode input bits and unselect encoding checkbox.
+     */
     public void setDecode() {
         this.decode = true;
         this.encode = false;
         encodeCheckbox.setSelected(false);
     }
 
+    /**
+     * Invoke HammingCoder instance to encode/decode input bits when OK button is pressed.
+     * Pop up alert dialogue when detecting invalid inputs or bit corruption.
+     * Display result in output TextArea after correcting single-bit corruption (if applicable).
+     */
     public void run(){
         inputString = input.getText();
         try {
@@ -84,10 +95,18 @@ public class ViewController {
         }
     }
 
+    /**
+     * Pop up a file-choosing window for loading a binary string
+     * from a .txt file into the input TextArea
+     */
     public void invokeLoadFile(){
         readInputFromFile(fileChooser.showOpenDialog(myStage));
     }
 
+    /**
+     * Pop up a file-choosing window for saving the output binary string
+     * into a target local .txt file
+     */
     public void invokeSaveFile(){
         saveOutputToFile(fileChooser.showSaveDialog(myStage));
     }
@@ -154,7 +173,5 @@ public class ViewController {
         chars[index] = chars[index]=='1'? '0':'1';
         return new String(chars);
     }
-
-
-
+    
 }

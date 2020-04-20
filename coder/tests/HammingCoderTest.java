@@ -40,7 +40,7 @@ public class HammingCoderTest {
     @Test
     public void testSingleBitCorruptionDetection() throws InvalidInputFormatException,DoubleBitErrorException {
         Random rand = new Random();
-        for (int i = 0; i<100; i++){
+        for (int i = 0; i<10000; i++){
             String original = Integer.toBinaryString(rand.nextInt(Integer.MAX_VALUE));
             String encoded = coder.encode(original);
             char[] chars = encoded.toCharArray();
@@ -60,7 +60,7 @@ public class HammingCoderTest {
     @Test(expected = DoubleBitErrorException.class)
     public void testDoubleBitCorruptionDetection() throws InvalidInputFormatException,SingleBitErrorException,DoubleBitErrorException {
         Random rand = new Random();
-        for (int i = 0; i<100; i++){
+        for (int i = 0; i<10000; i++){
             String original = Integer.toBinaryString(rand.nextInt(Integer.MAX_VALUE));
             String encoded = coder.encode(original);
             char[] chars = encoded.toCharArray();
