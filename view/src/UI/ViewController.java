@@ -9,6 +9,13 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class ViewController {
 
@@ -21,7 +28,9 @@ public class ViewController {
     @FXML
     private Text output;
 
+    private Stage myStage;
     private Alert alert;
+    private FileChooser fileChooser;
 
     private HammingCoder coder;
     private Boolean encode;
@@ -34,6 +43,10 @@ public class ViewController {
         this.encode = false;
         this.decode = false;
         setupAlert();
+    }
+
+    public void setStage(Stage stage) {
+        myStage = stage;
     }
 
     public void setEncode() {
@@ -61,6 +74,22 @@ public class ViewController {
         }catch (InvalidInputFormatException e){
             this.alert.setContentText("Input must be a binary sequence.");
             this.alert.showAndWait();
+        }
+    }
+
+    public void invokeFileChooser(){
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+        fileChooser.getExtensionFilters().add(extFilter);
+        readInputFromFile(fileChooser.showOpenDialog(myStage));
+    }
+
+    private void readInputFromFile(File file){
+        try {
+            input.setText(new String(Files.readAllBytes(Paths.get(file.getAbsolutePath()))));
+        } catch (IOException e) {
+            return;
         }
     }
 

@@ -40,6 +40,11 @@
       <RowConstraints />
    </rowConstraints>
    <children>
+      <Button mnemonicParsing="false" onAction="#invokeFileChooser" text="Upload file" GridPane.columnIndex="2" GridPane.rowIndex="4">
+         <GridPane.margin>
+            <Insets left="120.0" />
+         </GridPane.margin>
+      </Button>
       <Label text="Enter bit stream:" GridPane.columnIndex="2" GridPane.rowIndex="4" />
       <TextArea fx:id="input" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="300.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="TOP" />
       <VBox prefHeight="111.0" prefWidth="42.0" GridPane.columnIndex="6" GridPane.rowIndex="5">

@@ -10,7 +10,10 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("/view.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view.fxml"));
+        Parent root = loader.load();
+        ViewController controller = loader.getController();
+        controller.setStage(primaryStage);
         primaryStage.setTitle("Hamming Coder");
         primaryStage.setScene(new Scene(root, 500, 500));
         primaryStage.show();
